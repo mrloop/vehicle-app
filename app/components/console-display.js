@@ -9,7 +9,9 @@ export default Ember.Component.extend({
     window.demoCar = demoCar;
     this.showCarComponents();
     this.showFindFirstInstanceOfWheel();
-    this.showFindFirstInstanceOfEngineBolt();
+    this.showFindEngineBolts();
+    this.showFindEngineComponentWithCost();
+    this.showFindEngineComponentWithNameAndCost();
   },
 
   showCarComponents: function(){
@@ -19,17 +21,46 @@ export default Ember.Component.extend({
 
   showFindFirstInstanceOfWheel: function(){
     this.logCommand("demoCar.findPath('wheel')");
-    this.log(this.get('carBuilder.demoCar').findPart('wheel'));
+    this.log(this.get('carBuilder.demoCar').findPartWithName('wheel'));
   },
 
 
-  showFindFirstInstanceOfEngineBolt: function(){
-    this.logCommand("demoCar.findPart('engine').findParts('bolts')");
-    let bolts = this.get('carBuilder.demoCar').findPart('engine').findParts('bolt');
-    this.log(bolts.mapBy('asString').join(''));
+  showFindEngineBolts: function(){
+    this.logCommand("demoCar.findPartWithName('engine').findPartsWithName('bolt')");
+    let bolts = this.demoEngine().findPartsWithName('bolt');
+    this.log(this.arrayToStringZeroDepth(bolts));
+  },
+
+  showFindEngineComponentWithCost: function(){
+    let cost  = 10000;
+    let parts =  this.demoEngine().findPartsWithCost(cost).reject((part)=>{
+      //search include part we're searching so remove here if not wanted
+      return part.get('id') === this.demoEngine().get('id');}
+    );
+    this.logCommand("democar.findPartWithName('engine').findPartsWithCost(10000);");
+    this.log(this.arrayToStringZeroDepth(parts));
+  },
+
+  showFindEngineComponentWithNameAndCost: function(){
+    let parts = this.demoEngine().findPartsWithNameAndLessCost('bolt', 105);
+
+    this.logCommand("demoCar.findPartsWithNameAndLessCost('bolt', 1000);");
+    this.log(this.arrayToStringZeroDepth(parts));
+  },
+
+  demoEngine: function(){
+    return this.get('carBuilder.demoCar').findPartWithName('engine');
   },
 
   commandColor: 'rgb(255, 0, 255)',
+
+  arrayToStringZeroDepth: function(array){
+    return array.map((obj)=>{return `${obj.toStringZeroDepth()}\n`;}).join('');
+  },
+
+  arrayAsString: function(array){
+    return array.mapBy('asString').join('');
+  },
 
   logCommand: function(string){
     this.log(string, this.get('commandColor'));
@@ -38,7 +69,5 @@ export default Ember.Component.extend({
   log: function(string, color='#3498DB'){
     console.log(`%c${string}`, `color: ${color}; font-family: monospace`);
   }
-
-
 });
 

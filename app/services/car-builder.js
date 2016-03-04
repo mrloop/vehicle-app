@@ -32,12 +32,12 @@ export default Ember.Service.extend({
     return wheels;
   }),
 
-  addBoltsTo: function(obj, numBolts){
+  addBoltsTo: function(obj, numBolts, cents=100){
     for(var i=0 ;i<numBolts; i++){
       obj.get('parts').addObject(
         this.get('store').createRecord('part', {
           name: 'bolt',
-          cents: 100
+          cents: cents
         })
       )
     }
@@ -60,6 +60,7 @@ export default Ember.Service.extend({
       cents: 10000
     });
     this.addBoltsTo(engine, 12);
+    this.addBoltsTo(engine, 2, 110);
     engine.get('parts').addObjects([1,2,3,4].map(()=>{
       return this.get('store').createRecord('part', {
         name: 'piston',
