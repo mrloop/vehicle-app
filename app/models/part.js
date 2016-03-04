@@ -7,6 +7,21 @@ export default DS.Model.extend({
   name: DS.attr('string'),
   cents: DS.attr('number', {defaultValue: 0}),
 
+  findPart: function(name){
+    return this.findParts(name).objectAt(0);
+  },
+
+  findParts: function(name){
+    if(this.get('name') == name){
+      return [this];
+    }
+
+    return this.get('parts').reduce((arr, part)=>{
+      arr.addObjects(part.findParts(name));
+      return arr;
+    },[]);
+  },
+
   toString: function() {
     return this.get('asString')
   },
