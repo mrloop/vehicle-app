@@ -67,9 +67,9 @@ export default DS.Model.extend({
 
   reduceValueWithFilter: function(valueAttr, fnc){
     let val = fnc.call(this, this);
-    return val + this.get('parts').reduce((sum, part)=>{
+    return this.get('parts').reduce((sum, part)=>{
       return sum + part.reduceValueWithFilter(valueAttr, fnc);
-    }, 0);
+    }, val);
   },
 
 
