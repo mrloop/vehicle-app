@@ -12,6 +12,9 @@ export default Ember.Component.extend({
     this.showFindEngineBolts();
     this.showFindEngineComponentWithCost();
     this.showFindEngineComponentWithNameAndCost();
+    this.showTotalCost();
+    this.showTotalCostWithVat();
+    this.totalCostWithReducedRateAndRegularRate();
   },
 
   showCarComponents: function(){
@@ -46,6 +49,21 @@ export default Ember.Component.extend({
 
     this.logCommand("demoCar.findPartsWithNameAndLessCost('bolt', 1000);");
     this.log(this.arrayToStringZeroDepth(parts));
+  },
+
+  showTotalCost: function(){
+    this.logCommand("demoCar.get('totalCost')");
+    this.log(this.get('carBuilder.demoCar.totalCost'));
+  },
+
+  showTotalCostWithVat: function(){
+    this.logCommand("demoCar.get('totalCostWithVat')");
+    this.log(this.get('carBuilder.demoCar.totalCostWithVat'));
+  },
+
+  totalCostWithReducedRateAndRegularRate: function(){
+    this.logCommand("demoCar.get('totalCostWithReducedRateAndRegularRate')");
+    this.log(this.get('carBuilder.demoCar.totalCostWithReducedRateAndRegularRate'));
   },
 
   demoEngine: function(){
