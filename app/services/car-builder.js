@@ -3,7 +3,10 @@ import Ember from 'ember';
 export default Ember.Service.extend({
   store: Ember.inject.service('store'),
 
+  boltCounter: null,
+
   demoCar: Ember.computed('engine','wheels','body',function(){
+    this.set('boltCounter', 0);
     let car = this.get('store').createRecord('part',{
       id: 'demo-car',
       name: 'car',
@@ -20,12 +23,12 @@ export default Ember.Service.extend({
   wheels: Ember.computed(function(){
     let wheels = this.get('store').createRecord('part', {
       name: 'wheels'
-    })
-    wheels.get('parts').addObjects([1,2,3,4].map((i)=>{
+    });
+    wheels.get('parts').addObjects([1,2,3,4].map(()=>{
       let wheel = this.get('store').createRecord('part', {
         name: 'wheel',
         cents: 1000
-      })
+      });
       this.addBoltsTo(wheel, 6);
       return wheel;
     }));
@@ -37,9 +40,10 @@ export default Ember.Service.extend({
       obj.get('parts').addObject(
         this.get('store').createRecord('part', {
           name: 'bolt',
-          cents: cents
+          cents: cents,
+          issue: this.incrementProperty('boltCounter')
         })
-      )
+      );
     }
     return obj;
   },
@@ -69,5 +73,4 @@ export default Ember.Service.extend({
     }));
     return engine;
   })
-
 });

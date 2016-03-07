@@ -67,7 +67,7 @@ export default Ember.Component.extend({
   },
 
   log: function(string, color='#3498DB'){
-    console.log(`%c${string}`, `color: ${color}; font-family: monospace`);
+    console.log(`%c${string}`, `color: ${color}; font-family: monospace;`);
   }
 });
 

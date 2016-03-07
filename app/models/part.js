@@ -31,7 +31,7 @@ export default DS.Model.extend({
   },
 
   findPartsWithFnc: function(fnc){
-    let arr = []
+    let arr = [];
     if(fnc.call(this, this)){
       arr = [this];
     }
@@ -46,7 +46,7 @@ export default DS.Model.extend({
   },
 
   toStringZeroDepth: function(){
-    return `${this.get('name')} ${this.get('cents')}`
+    return `${this.get('name')} ${this.get('cents')}`;
   },
 
   depth: Ember.computed('part.depth', function(){
