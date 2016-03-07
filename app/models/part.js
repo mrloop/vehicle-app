@@ -35,11 +35,43 @@ export default DS.Model.extend({
     if(fnc.call(this, this)){
       arr = [this];
     }
-    return this.get('parts').reduce((arr, part)=>{
-      arr.addObjects(part.findPartsWithFnc(fnc));
-      return arr;
+    return this.get('parts').reduce((array, part)=>{
+      array.addObjects(part.findPartsWithFnc(fnc));
+      return array;
     },arr);
   },
+
+  totalCost: Ember.computed('cents', 'parts.@each.cents', function(){
+    return this.reduceValueWithFilter('cents', (part)=>{
+      return part.get('cents') || 0;
+    });
+  }),
+
+  vatRate: 0.25,
+  reducedVatRate: 0.1,
+
+  totalCostWithVat: Ember.computed('totalCost', 'vatRate', function(){
+    return this.get('totalCost') + (this.get('totalCost') * this.get('vatRate'));
+  }),
+
+  totalCostWithReducedRateAndRegularRate: Ember.computed('cents', 'parts.@each.cents', 'parts.@each.vatRate', 'parts.@each.reducedVatRate', function(){
+    let reducedRateThreshold = 105;
+    return this.reduceValueWithFilter('cents', (part)=>{
+      if(part.get('cents') <= reducedRateThreshold){
+        return part.get('cents') + (part.get('cents') * (part.get('reducedVatRate') || 0));
+      } else {
+        return part.get('cents') + (part.get('cents') * (part.get('vatRate') || 0));
+      }
+    });
+  }),
+
+  reduceValueWithFilter: function(valueAttr, fnc){
+    let val = fnc.call(this, this);
+    return val + this.get('parts').reduce((sum, part)=>{
+      return sum + part.reduceValueWithFilter(valueAttr, fnc);
+    }, 0);
+  },
+
 
   toString: function() {
     return this.get('asString');

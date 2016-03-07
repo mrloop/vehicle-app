@@ -54,3 +54,30 @@ test('findPartsWithNameAndLessCost', function(assert) {
     assert.equal(bolts.length, 42);
   });
 });
+
+test('total cost', function(assert) {
+  Ember.run(()=>{
+    let car = this.container.lookupFactory('service:car-builder').create().get('demoCar');
+    assert.equal(car.get('totalCost'), 188420);
+  });
+});
+
+test('total cost with vat', function(assert) {
+  Ember.run(()=>{
+    let car = this.container.lookupFactory('service:car-builder').create().get('demoCar');
+    let expected = 188420 * 1.25;
+    assert.equal(car.get('totalCostWithVat'), expected, `${car.get('totalCostWithVat')} ${expected}`);
+  });
+});
+
+test('total cost mixed vat rate', function(assert) {
+  Ember.run(()=>{
+    let car = this.store().createRecord('part', {name: 'van', cents: 450});
+    let body = this.store().createRecord('part', {name: 'body', cents: 300});
+    let bolt = this.store().createRecord('part', {name: 'bolt', cents: 105});
+    car.get('parts').addObject(body);
+    body.get('parts').addObject(bolt);
+    let expected = (450 * 1.25) + (300 * 1.25) + (105 * 1.1);
+    assert.equal(car.get('totalCostWithReducedRateAndRegularRate'), expected);
+  });
+});
