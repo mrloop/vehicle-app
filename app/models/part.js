@@ -42,7 +42,7 @@ export default DS.Model.extend({
   },
 
   totalCost: Ember.computed('cents', 'parts.@each.cents', function(){
-    return this.reduceValueWithFilter('cents', (part)=>{
+    return this.reduceWithFnc((part)=>{
       return part.get('cents') || 0;
     });
   }),
@@ -56,7 +56,7 @@ export default DS.Model.extend({
 
   totalCostWithReducedRateAndRegularRate: Ember.computed('cents', 'parts.@each.cents', 'parts.@each.vatRate', 'parts.@each.reducedVatRate', function(){
     let reducedRateThreshold = 105;
-    return this.reduceValueWithFilter('cents', (part)=>{
+    return this.reduceWithFnc((part)=>{
       if(part.get('cents') <= reducedRateThreshold){
         return part.get('cents') + (part.get('cents') * (part.get('reducedVatRate') || 0));
       } else {
@@ -65,13 +65,12 @@ export default DS.Model.extend({
     });
   }),
 
-  reduceValueWithFilter: function(valueAttr, fnc){
+  reduceWithFnc: function(fnc){
     let val = fnc.call(this, this);
     return this.get('parts').reduce((sum, part)=>{
-      return sum + part.reduceValueWithFilter(valueAttr, fnc);
+      return sum + part.reduceWithFnc(fnc);
     }, val);
   },
-
 
   toString: function() {
     return this.get('asString');
