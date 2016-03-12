@@ -1,7 +1,6 @@
 # Vehicle-app
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+List Vechile parts, see [https://gist.github.com/mrloop/b54cce53a28e07dabba0](https://gist.github.com/mrloop/b54cce53a28e07dabba0) for simple minimal version.
 
 ## Prerequisites
 
